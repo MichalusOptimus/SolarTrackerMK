@@ -40,16 +40,42 @@ int debouncingTime = 20;
 void ButtonsInit()
 {
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOEEN; // enable clock for GPIO E
+	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN; // enable clock for SYSCFG + COMP + VREFBUF
 
-	GPIOE->MODER &= ~(GPIO_MODER_MODE14_0 | GPIO_MODER_MODE14_1); //  configure PE14 [00] -> input mode
-	GPIOE->MODER &= ~(GPIO_MODER_MODE15_0 | GPIO_MODER_MODE15_1); //  configure PE15 [00] -> input mode
-	GPIOE->MODER &= ~(GPIO_MODER_MODE10_0 | GPIO_MODER_MODE10_1); //  configure PE10 [00] -> input mode
-	GPIOE->MODER &= ~(GPIO_MODER_MODE12_0 | GPIO_MODER_MODE12_1); //  configure PE12 [00] -> input mode
+	GPIOE->MODER &= ~(GPIO_MODER_MODE14_0 | GPIO_MODER_MODE14_1); //  configure PE14 [00] -> input mode, button UP
+	GPIOE->MODER &= ~(GPIO_MODER_MODE15_0 | GPIO_MODER_MODE15_1); //  configure PE15 [00] -> input mode, button DOWN
+	GPIOE->MODER &= ~(GPIO_MODER_MODE10_0 | GPIO_MODER_MODE10_1); //  configure PE10 [00] -> input mode, button LEFT
+	GPIOE->MODER &= ~(GPIO_MODER_MODE12_0 | GPIO_MODER_MODE12_1); //  configure PE12 [00] -> input mode, button RIGHT
+	GPIOE->MODER &= ~(GPIO_MODER_MODE7_0 | GPIO_MODER_MODE7_1); //    configure PE7 [00] -> input mode, button MODE
 
 	GPIOE->PUPDR |= GPIO_PUPDR_PUPD14_0; // configure PE14 [01] -> internal pull-up
 	GPIOE->PUPDR |= GPIO_PUPDR_PUPD15_0; // configure PE15 [01] -> internal pull-up
 	GPIOE->PUPDR |= GPIO_PUPDR_PUPD10_0; // configure PE10 [01] -> internal pull-up
 	GPIOE->PUPDR |= GPIO_PUPDR_PUPD12_0; // configure PE12 [01] -> internal pull-up
+	GPIOE->PUPDR |= GPIO_PUPDR_PUPD7_0; // configure PE7 [01] -> internal pull-up
+
+	SYSCFG->EXTICR[1] |= SYSCFG_EXTICR2_EXTI7_PE; // select PE line for EXTI
+
+	EXTI->FTSR1 |= EXTI_FTSR1_FT7; // falling trigger enable
+	EXTI->RTSR1 |= EXTI_RTSR1_RT7; // rising trigger enable
+
+	EXTI->IMR1 |= EXTI_IMR1_IM7; // unmask interrupt line
+	EXTI->EMR1 |= EXTI_EMR1_EM7; // event
+
+	NVIC_EnableIRQ(EXTI9_5_IRQn); // enable NVIC interface
+
+}
+
+void EXTI9_5_IRQHandler()
+{
+	//if(EXTI->PR1 & EXTI_PR1_PIF7)
+	//{
+		if(GPIOE->IDR & GPIO_IDR_ID7) autoMode = 0;
+		else autoMode = 1;
+
+		EXTI->PR1 |= EXTI_PR1_PIF7;
+	//}
+
 }
 
 /* Button UP */
