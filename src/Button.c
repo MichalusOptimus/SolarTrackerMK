@@ -8,9 +8,12 @@
  *      pushbutton DOWN -> PE14
  *      pushbutton LEFT -> PE12
  *      pushbutton RIGHT -> PE10
+ *      pushbutton MODE -> PE7
  *
  *      pushbuttons connected to GND
  *      enable internal pull-up
+ *
+ *
  */
 
 
@@ -93,6 +96,7 @@ char ButtonUpRead()
 		}
 	break;
 
+	// check debouncing
 	case 2:
 		if((currentTime - startPressedTimeUp>debouncingTime) && buttonUpPressed) stateButtonUp = 3;
 		else if((currentTime - startPressedTimeUp>debouncingTime) && !buttonUpPressed) stateButtonUp = 1;
@@ -100,9 +104,10 @@ char ButtonUpRead()
 
 	case 3:
 		pressedTimeUp = currentTime - startPressedTimeUp;	// debouncing, counting pressed time
-		if(!buttonUpPressed) {stateButtonUp = 4; stopPressedTimeUp = millis();}
+		if(!buttonUpPressed) {stateButtonUp = 4; stopPressedTimeUp = millis();}		//
 	break;
 
+	// check debouncing
 	case 4:
 		if((currentTime - stopPressedTimeUp>debouncingTime) && buttonUpPressed) stateButtonUp = 3;
 		else if((currentTime - stopPressedTimeUp>debouncingTime) && !buttonUpPressed)

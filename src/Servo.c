@@ -39,7 +39,7 @@ void ServoSetAngleHorizontal(int angle)
 	if(angle<0) angle = 0;				// limits
 	else if(angle>180) angle = 180;
 
-	TIM3->CCR3 = 11.11 * (180 - angle) + 500; 	// servo can work in range 500 - 2500ms, factor 11.11 -> 2000ms /180 deg
+	TIM3->CCR3 = 11.11 * (180 - angle) + 500; 	// servo can work in range 500 - 2500us, factor 11.11 -> 2000us /180 deg
 }
 
 void ServoSetAngleVertical(int angle)
