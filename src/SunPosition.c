@@ -8,14 +8,15 @@
 #include "SunPosition.h"
 #include "math.h"
 
+// convert degree to radians and radians to degree
 #define deg2rad(angleInDegrees) ((angleInDegrees) * M_PI / 180.0)
 #define rad2deg(angleInRadians) ((angleInRadians) * 180.0 / M_PI)
 
-
+// azimuth and zenith angles
 float solarAzimuthAngleDeg, solarZenithAngleDeg;
 
-
-void SunCalculatePosition(unsigned char timezone,int dayOfYear, unsigned char hr, unsigned char mn, unsigned char sc,float longitude, float latitude)
+// calculate sun position by means of the time and the location of observer
+void SunCalculatePosition(char timezone,short dayOfYear, unsigned char hr, unsigned char mn, unsigned char sc,float longitude, float latitude)
 {
 	// calculate fractional year
 	float y = ((2*M_PI)/365.0)*((float)dayOfYear - 1.0 + (((float)hr - 12.0)/24.0));
@@ -46,11 +47,13 @@ void SunCalculatePosition(unsigned char timezone,int dayOfYear, unsigned char hr
 	else solarAzimuthAngleDeg = fmod(540 - rad2deg(solarAzimuthAngle),360);
 }
 
+// return current azimuth angle
 float SunGetCurrentAzimuth()
 {
 	return solarAzimuthAngleDeg;
 }
 
+// return current zenith angle
 float SunGetCurrentZenith()
 {
 	return solarZenithAngleDeg;

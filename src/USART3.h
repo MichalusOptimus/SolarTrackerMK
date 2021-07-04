@@ -4,24 +4,17 @@
  *  Created on: 10.02.2021
  *      Author: Michal
  *
-	USART frame receive from PC -> set PID parameters
-	Frame: [head head head counter Kp Ki Kd S1 S2 K tempTarget tail]
-	Length: 33 bytes
- 	head, counter and tail -> 1 bytes size
- 	PID parameters -> 4 bytes size
- 	head sign -> #
- 	tail sign -> !
- *
  */
 
 #include "stm32l4xx.h"
 
-#define F_CLK 80000000				// System clock frequency
-#define BAUDRATE 115200				// USART3 baudrate
-#define NUM_OF_FLOATS_RECV_USART 7 	// Number of floats from PC
-#define NUM_OF_FLOATS_SEND_USART 3 	// Number of floats to send
+#define F_CLK 80000000					// System clock frequency
+#define BAUDRATE 115200					// USART3 baudrate
+#define NUM_OF_FLOATS_RECV_USART 7 		// Number of floats from PC
+#define NUM_OF_FLOATS_SEND_USART 14 	// Number of floats to send
 
-unsigned char bufSend[NUM_OF_FLOATS_SEND_USART*4],bufReceive[NUM_OF_FLOATS_RECV_USART*4+5];
+unsigned char bufSend[4+NUM_OF_FLOATS_SEND_USART*4];		// 4 additional signs -> start frame ##, end frame !!
+unsigned char bufReceive[20];
 char receivedMessageFromUSART;	// flag
 
 

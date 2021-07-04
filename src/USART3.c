@@ -37,23 +37,25 @@ void USART3_Init()
 	// 5. Enable USART interrupt
 	USART3->CR1 |= USART_CR1_RXNEIE; //| USART_CR1_IDLEIE;
 	NVIC_EnableIRQ(USART3_IRQn);
-
 }
-
 
 
 // Write data to send buffer
 void dataToBuffer(float *var, unsigned char *bufSend)
 {
 	unsigned char j,i;
+	bufSend[0] = '#'; // Start of frame
+	bufSend[1] = '#';
 	for(j=0;j<NUM_OF_FLOATS_SEND_USART;j++)
 	{
 	floatToBytes.a = var[j];
 	for(i=0;i<sizeof(float);i++)
 	{
-		bufSend[i+sizeof(float)*j] = floatToBytes.bytes[3-i];
+		bufSend[2+i+sizeof(float)*j] = floatToBytes.bytes[3-i];
 	}
 	}
+	bufSend[2+sizeof(float)*NUM_OF_FLOATS_SEND_USART] = '!';		// End of frame
+	bufSend[3+sizeof(float)*NUM_OF_FLOATS_SEND_USART] = '!';
 }
 
 void USART3_IRQHandler()
@@ -63,46 +65,13 @@ void USART3_IRQHandler()
 	if(USART3->ISR & USART_ISR_RXNE)
 	{
 		unsigned char data = USART3->RDR;
-		switch(stateFrame)
+		bufReceive[wp] = data;
+		wp++;
+		if(bufReceive[wp-1] == '#')
 		{
-		case 1:
-			if(data == '#')
-			{
-				bufReceive[wp]=data;
-				stateFrame = 2;
-			}
-		break;
-		case 2:
-			if(data == '#')
-			{
-				bufReceive[wp]=data;
-				stateFrame = 3;
-			}
-			else stateFrame = 1;
-		break;
-		case 3:
-			if(data == '#')
-			{
-				bufReceive[wp]=data;
-				stateFrame = 4;
-			}
-			else stateFrame = 1;
-		break;
-		case 4:
-				bufReceive[wp]=data;
-				if(wp == 31) stateFrame = 5;
-		break;
-		case 5:
-			if(data == '!')
-			{
-				bufReceive[wp]=data;
-				stateFrame = 1;
-				receivedMessageFromUSART = 1;
-			}
-			else stateFrame = 1;
-		break;
+			wp = 0;
+			receivedMessageFromUSART = 1;
 		}
-		if(wp++ >= sizeof(bufReceive)-1) wp = 0;
 	}
 
 

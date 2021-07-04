@@ -11,4 +11,4 @@ float SunGetCurrentAzimuth();
 
 float SunGetCurrentZenith();
 
-void SunCalculatePosition(unsigned char timezone,int dayOfYear, unsigned char hr, unsigned char mn, unsigned char sc,float longitude, float latitude);
+void SunCalculatePosition(char timezone,short dayOfYear, unsigned char hr, unsigned char mn, unsigned char sc,float longitude, float latitude);

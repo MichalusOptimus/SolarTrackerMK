@@ -38,20 +38,20 @@ void LedWrite(LedPin pin, LedState state)
 		else if(state == OFF) GPIOB->BRR |= LED3;
 		else if(state == TOG) GPIOB->ODR ^= LED3;
 	break;
-	case LED_R:
-		if(state == ON) GPIOA->BSRR |= LED_R;
-		else if(state == OFF) GPIOA->BRR |= LED_R;
-		else if(state == TOG) GPIOA->ODR ^= LED_R;
+	case LED_MAN:
+		if(state == ON) GPIOA->BSRR |= LED_MAN;
+		else if(state == OFF) GPIOA->BRR |= LED_MAN;
+		else if(state == TOG) GPIOA->ODR ^= LED_MAN;
 	break;
 	case LED_G:
 		if(state == ON) GPIOA->BSRR |= LED_G;
 		else if(state == OFF) GPIOA->BRR |= LED_G;
 		else if(state == TOG) GPIOA->ODR ^= LED_G;
 	break;
-	case LED_B:
-		if(state == ON) GPIOA->BSRR |= LED_B;
-		else if(state == OFF) GPIOA->BRR |= LED_B;
-		else if(state == TOG) GPIOA->ODR ^= LED_B;
+	case LED_AUTO:
+		if(state == ON) GPIOA->BSRR |= LED_AUTO;
+		else if(state == OFF) GPIOA->BRR |= LED_AUTO;
+		else if(state == TOG) GPIOA->ODR ^= LED_AUTO;
 	break;
 	}
 }
